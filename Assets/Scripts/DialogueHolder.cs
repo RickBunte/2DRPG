@@ -4,37 +4,48 @@ using UnityEngine;
 
 public class DialogueHolder : MonoBehaviour
 {
-    //public string dialogue;
-    private DialogueManager dialogueManager;
-    public string[] dialogueLines;
-
-    // Start is called before the first frame update
+    [SerializeField] private string[] _dialogueLines;
+    private DialogueManager _dialogueManager;
+    private PlayerController _playerController;
+    private bool _playerNearby;
+    
     void Start()
     {
-        dialogueManager = FindObjectOfType<DialogueManager>();
+        _dialogueManager = FindObjectOfType<DialogueManager>();
+        _playerController = FindObjectOfType<PlayerController>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if(collision.gameObject.name == "player")
+        if (Input.GetKeyUp(KeyCode.C) && _playerNearby)
         {
-            if (Input.GetKeyUp(KeyCode.C))
+            if (!_dialogueManager.IsDone())
             {
-                //dialogueManager.ShowDialogueBox(dialogue);
-
-                if (!dialogueManager.isDialogueActive)
-                {
-                    dialogueManager.dialogueLines = dialogueLines;
-                    dialogueManager.currentLine = 0;
-                    dialogueManager.ShowDialogue();
-                }
+                _dialogueManager.ToggleDialogueBox(true);
+                _dialogueManager.PrintDialogue();
             }
+            else
+            {
+                _dialogueManager.ToggleDialogueBox(false);
+                _dialogueManager.ResetDialogue();
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.CompareTag("Player"))
+        {
+            _dialogueManager.SetDialogue(_dialogueLines);
+            _playerNearby = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            _playerNearby = false;
         }
     }
 }

@@ -24,16 +24,33 @@ public class CombatController : MonoBehaviour
     public GameObject attackButton;
     public GameObject restButton;
 
+    private AudioSource _audioSource;
+    private LastEnemy _information;
+    private GameObject _player;
+
     private int turn;
     private bool lowHealthLineIsSaid;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         state = CombatState.START;
         turn = 1;
         lowHealthLineIsSaid = false;
+        _audioSource = FindObjectOfType<Persistant>().GetComponent<AudioSource>();
+        _information = FindObjectOfType<LastEnemy>();
+        SetEnemyInfo(_information.GetMemory().Item1, _information.GetMemory().Item2);
         StartCoroutine(PrepareCombat());
+        _player = FindObjectOfType<PlayerController>().gameObject;
+        _player.SetActive(false);
+    }
+
+    public void SetEnemyInfo(GameObject enemyUnit, AudioClip _battleTheme)
+    {
+        enemyPrefab = enemyUnit;
+        _audioSource.Stop();
+        _audioSource.clip = _battleTheme;
+        _audioSource.Play();
     }
 
     void ToggleButtons(bool boolean)

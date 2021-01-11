@@ -1,17 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
-    public string sceneToLoad;
-    public string exitPoint;
-    private PlayerController player;
+    [SerializeField] private string _sceneToLoad;
+    [SerializeField] private string _exitPoint;
+    private PlayerController _player;
 
     // Start is called before the first frame update
     void Start()
     {
-        player = FindObjectOfType<PlayerController>();
+        _player = FindObjectOfType<PlayerController>();
     }
 
     // Update is called once per frame
@@ -24,8 +25,8 @@ public class LoadScene : MonoBehaviour
     {
         if(collision.gameObject.name == "player")
         {
-            Application.LoadLevel(sceneToLoad);
-            player.startingPoint = exitPoint;
+            SceneManager.LoadScene(_sceneToLoad, LoadSceneMode.Single);
+            _player.startingPoint = _exitPoint;
         }
     }
 }

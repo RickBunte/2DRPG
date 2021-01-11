@@ -5,47 +5,94 @@ using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
-    public GameObject dialogueBox;
-    public Text dialogueText;
+    [SerializeField] private GameObject _dialogueBox;
+    [SerializeField] private Text _dialogueText;
+    [SerializeField] private float _textSpeed;
 
-    public bool isDialogueActive;
-    public string[] dialogueLines;
-    public int currentLine;
+    private bool _isPrinting;
+    private bool _dialogueDone;
+    private int _dialogueLineIndex;
+    private int _previousLetterIndex = 0;
+    private string[] dialogueLines;
+    private AudioSource _audioPlayer;
+    
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        _dialogueLineIndex = 0;
+        _isPrinting = false;
+        _dialogueText.text = "";
+        _audioPlayer = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetDialogue(string[] dialogue)
     {
-        if (isDialogueActive && Input.GetKeyDown(KeyCode.C))
-        {
-            currentLine++;
-        }
-        if(currentLine >= dialogueLines.Length)
-        {
-            dialogueBox.SetActive(false);
-            isDialogueActive = false;
-            currentLine = 0;
-        }
-        dialogueText.text = dialogueLines[currentLine];
+        _dialogueDone = false;
+        _dialogueLineIndex = 0;
+        dialogueLines = dialogue;
     }
 
-    //public void ShowDialogueBox(string dialogue)
-    //{
-    //    isDialogueActive = true;
-    //    dialogueBox.SetActive(true);
-    //    dialogueText.text = dialogue;
-    //}
-
-    public void ShowDialogue()
+    public void PrintDialogue()
     {
-        isDialogueActive = true;
-        dialogueBox.SetActive(true);
+        if (_isPrinting)
+        {
+            _isPrinting = false;
+        }
+        else
+        {
+            _isPrinting = true;
+            StartCoroutine(PrintLine(dialogueLines[_dialogueLineIndex]));
+            _dialogueLineIndex++;
+        }
+        if(_dialogueLineIndex == dialogueLines.Length)
+        {
+            _dialogueDone = true;
+        }
+    }
 
+    private IEnumerator PrintLine(string lineToPrint)
+    {
+        float startTime = Time.time;
+        string currentString;
+
+        while (_isPrinting)
+        {
+            float elapsedTime = Time.time - startTime;
+            int lettersToPrint = (int) (elapsedTime / _textSpeed);
+            if(lettersToPrint >= lineToPrint.Length)
+            {
+                _isPrinting = false;
+                break;
+            }
+            currentString = lineToPrint.Substring(0, lettersToPrint);
+
+            if(_previousLetterIndex != lettersToPrint) _audioPlayer.Play();
+
+            _dialogueText.text = currentString;
+            _previousLetterIndex = lettersToPrint;
+            yield return null;
+        }
+        _audioPlayer.Play();
+
+        _dialogueText.text = lineToPrint;
+    }
+
+    public void ToggleDialogueBox(bool active)
+    {
+        _dialogueBox.SetActive(active);
+    }
+
+    public bool IsDone()
+    {
+        return _dialogueDone;
+    }
+
+    public void ResetDialogue()
+    {
+        _dialogueDone = false;
+        _isPrinting = false;
+        _dialogueLineIndex = 0;
     }
 }
