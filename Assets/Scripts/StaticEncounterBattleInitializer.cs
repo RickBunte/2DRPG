@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class StaticEncounterBattleInitializer : MonoBehaviour
 {
     [SerializeField] private GameObject _map;
-    [SerializeField] private GameObject _unit;
+    [SerializeField] private EnemyStatController _unit;
     [SerializeField] private AudioClip _battleTheme;
     private PlayerController _playerController;
     private LastEnemy _lastEnemyManager;

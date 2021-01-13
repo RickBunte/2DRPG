@@ -12,7 +12,7 @@ public class CombatController : MonoBehaviour
     public GameObject enemyPrefab;
 
     public Transform playerBattleStation;
-    public Transform enemyBattleStation;
+    [SerializeField] private Image _enemyBattleSprite;
 
     PlayerStatsController playerUnit;
     EnemyStatController enemyUnit;
@@ -45,9 +45,11 @@ public class CombatController : MonoBehaviour
         _player.SetActive(false);
     }
 
-    public void SetEnemyInfo(GameObject enemyUnit, AudioClip _battleTheme)
+    public void SetEnemyInfo(EnemyStatController enemyStats, AudioClip _battleTheme)
     {
-        enemyPrefab = enemyUnit;
+        enemyUnit = enemyStats;
+        enemyUnit.ResetHealth();
+        _enemyBattleSprite.sprite = enemyUnit.GetBattleSprite();
         _audioSource.Stop();
         _audioSource.clip = _battleTheme;
         _audioSource.Play();
@@ -64,9 +66,6 @@ public class CombatController : MonoBehaviour
         ToggleButtons(false);
         GameObject playerGameObject = Instantiate(playerPrefab, playerBattleStation);
         playerUnit = playerGameObject.GetComponent<PlayerStatsController>();
-
-        GameObject enemyGameObject = Instantiate(enemyPrefab, enemyBattleStation);
-        enemyUnit = enemyGameObject.GetComponent<EnemyStatController>();
 
         healthText.text = "Health: " + playerUnit.currentHealth + "/" + playerUnit.maxHealth;
         energyTokenText.text = "Energy: " + playerUnit.currentEnergyTokens + "/" + playerUnit.maxEnergyTokens;
@@ -119,7 +118,7 @@ public class CombatController : MonoBehaviour
         if (playerEnergyTokenCheck)
         {
             playerUnit.ConsumeEnergyToken(1);
-            dialoguePanel.GetComponentInChildren<Text>().text = "You strike " + enemyUnit.enemyName;
+            dialoguePanel.GetComponentInChildren<Text>().text = "You strike " + enemyUnit.GetName();
         }
         else
         {
@@ -170,7 +169,7 @@ public class CombatController : MonoBehaviour
     IEnumerator EnemyTurn()
     {
         bool firstTurn = turn == 1;
-        bool enemyHealthCheck = (float)enemyUnit.currentHealth / enemyUnit.maxHealth <= 0.25f;
+        bool enemyHealthCheck = enemyUnit.GetHealthPercentage() <= 0.25f;
         if (firstTurn)
         {
             dialoguePanel.GetComponentInChildren<Text>().text = enemyUnit.enemyFirstTurnLine;
@@ -182,7 +181,7 @@ public class CombatController : MonoBehaviour
         }
         yield return new WaitForSeconds(2f);
         dialoguePanel.SetActive(false);
-        bool playerDefeated = playerUnit.TakeDamage(enemyUnit.damage);
+        bool playerDefeated = playerUnit.TakeDamage(enemyUnit.GetDamage());
         healthText.text = "Health: " + playerUnit.currentHealth + "/" + playerUnit.maxHealth;
         yield return new WaitForSeconds(2f);
         if (playerDefeated)

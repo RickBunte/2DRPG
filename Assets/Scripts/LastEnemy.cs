@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class LastEnemy : MonoBehaviour
 {
-    private GameObject _enemy;
+    #region Properties
+    private EnemyStatController _enemy;
     private AudioClip _battleTheme;
+    #endregion
 
-    public void SetMemory(GameObject enemy, AudioClip theme)
+    #region Methods
+    public void SetMemory(EnemyStatController enemy, AudioClip theme)
     {
         _enemy = enemy;
         _battleTheme = theme;
     }
 
-    public (GameObject, AudioClip) GetMemory()
+    public (EnemyStatController, AudioClip) GetMemory()
     {
         return (_enemy, _battleTheme);
     }
+    #endregion
 }

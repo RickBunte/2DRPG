@@ -945,7 +945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _map: {fileID: 34087155}
-  _unit: {fileID: 1302660461284924983, guid: c6fd0c91029a37641bc8b9238afb2fb8, type: 3}
+  _unit: {fileID: 1302660461284924937, guid: c6fd0c91029a37641bc8b9238afb2fb8, type: 3}
   _battleTheme: {fileID: 8300000, guid: 097c2850f25090742bbc54998be04dc0, type: 3}
 --- !u!61 &2015538591
 BoxCollider2D:

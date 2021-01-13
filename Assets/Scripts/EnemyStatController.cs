@@ -1,15 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyStatController : MonoBehaviour
 {
-    public string enemyName;
+    #region Properties
+    [SerializeField] private string _name;
 
-    public int maxHealth;
-    public int currentHealth;
+    [SerializeField] private int _maxHealth;
+    [SerializeField] private int _currentHealth;
 
-    public int damage;
+    [SerializeField] private int _damage;
+
+    [SerializeField] private Sprite _battleSprite;
 
     public string[] loot;
 
@@ -19,11 +23,18 @@ public class EnemyStatController : MonoBehaviour
     public string enemyLowHealthLine;
     public string playerLowHealthLine;
     public string enemyDefeatLine;
+    #endregion
 
+    #region Methods
+
+    public void ResetHealth()
+    {
+        _currentHealth = _maxHealth;
+    }
     public bool TakeDamage(int amount)
     {
-        currentHealth -= amount;
-        if(currentHealth <= 0)
+        _currentHealth -= amount;
+        if(_currentHealth <= 0)
         {
             return true;
         }
@@ -32,4 +43,25 @@ public class EnemyStatController : MonoBehaviour
             return false;
         }
     }
+
+    public string GetName()
+    {
+        return _name;
+    }
+
+    public float GetHealthPercentage()
+    {
+        return _currentHealth / _maxHealth;
+    }
+
+    public int GetDamage()
+    {
+        return _damage;
+    }
+
+    public Sprite GetBattleSprite()
+    {
+        return _battleSprite;
+    }
+    #endregion
 }
