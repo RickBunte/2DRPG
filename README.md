@@ -5,5 +5,4 @@ The premises of this game is that you play as a soldier being transferred into a
 
 This game serves more of an educational purpose to myself rather than a commercial purpose. Therefore this game is free to be picked up and further developed by anyone wanting to work on it, read the code base I made and everything.
 
-The direct link to my scripts folder:
-https://github.com/RickBunte/2DRPG/tree/main/Assets/Scripts
+Click [here](https://github.com/RickBunte/2DRPG/tree/main/Assets/Scripts) to go to my scripts for this game.
